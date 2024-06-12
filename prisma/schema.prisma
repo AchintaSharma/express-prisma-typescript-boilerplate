@@ -14,7 +14,7 @@ model users {
   Email        String?       @db.VarChar(255)
   PasswordHash String?       @db.VarChar(255)
   Role         users_Role
-  UserVerified Boolean?
+  UserVerified Boolean?      @default(false)
   Status       users_Status?
   CreatedAt    DateTime?     @default(now()) @db.DateTime(0)
   UpdatedAt    DateTime?     @default(now()) @db.DateTime(0)
