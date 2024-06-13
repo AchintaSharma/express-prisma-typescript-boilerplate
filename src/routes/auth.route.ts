@@ -6,14 +6,17 @@ import {
   // resetPassword,
 } from "../controllers/auth.controller";
 
-import { validateLoginRequestBody } from "../middlewares/validators/auth.validator";
+import {
+  validateLoginRequestBody,
+  validateSignupRequestBody,
+} from "../middlewares/validators/auth.validator";
 // Import types
 import { Application } from "express";
 
 // APIs
 const authRoutes = (app: Application) => {
   // API for user sign up
-  app.post("/pscpl/api/v1/auth/signup", signUp);
+  app.post("/pscpl/api/v1/auth/signup", validateSignupRequestBody, signUp);
 
   // API for user sign in
   app.post("/pscpl/api/v1/auth/login", validateLoginRequestBody, login);
