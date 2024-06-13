@@ -1,8 +1,8 @@
 // Import controllers
 import {
+  login,
+  logout,
   signUp,
-  // signIn,
-  // signOut,
   // resetPassword,
 } from "../controllers/auth.controller";
 
@@ -15,10 +15,10 @@ const authRoutes = (app: Application) => {
   app.post("/pscpl/api/v1/auth/signup", signUp);
 
   // API for user sign in
-  // app.post("/pscpl/api/v1/auth/signin", signIn);
+  app.post("/pscpl/api/v1/auth/login", login);
 
   // API for user sign out
-  // app.post("/pscpl/api/v1/auth/signout", signOut);
+  app.post("/pscpl/api/v1/auth/logout", logout);
 
   // API for password reset
   // app.post("/pscpl/api/v1/auth/reset-password", resetPassword);
