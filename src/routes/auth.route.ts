@@ -6,6 +6,7 @@ import {
   // resetPassword,
 } from "../controllers/auth.controller";
 
+import { validateLoginRequestBody } from "../middlewares/validators/auth.validator";
 // Import types
 import { Application } from "express";
 
@@ -15,7 +16,7 @@ const authRoutes = (app: Application) => {
   app.post("/pscpl/api/v1/auth/signup", signUp);
 
   // API for user sign in
-  app.post("/pscpl/api/v1/auth/login", login);
+  app.post("/pscpl/api/v1/auth/login", validateLoginRequestBody, login);
 
   // API for user sign out
   app.post("/pscpl/api/v1/auth/logout", logout);

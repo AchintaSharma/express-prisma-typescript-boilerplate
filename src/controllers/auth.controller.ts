@@ -9,6 +9,7 @@ import { db } from "../configs/db.config";
 // Import configs
 import { authConfig } from "../configs/auth.config";
 import { userStatus } from "../utils/constants";
+import { users } from "@prisma/client";
 
 // Function for admin signup
 export const signUp = async (
@@ -122,7 +123,7 @@ export const signUp = async (
 
 // Function for user login
 export const login = async (req: Request, res: Response): Promise<Response> => {
-  const { username, password } = req.body;
+  const { username = "", password, email = "" } = req.body;
 
   // Check if secret is set
   if (!authConfig.secret) {
@@ -137,62 +138,81 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
   try {
     // Fetch user by username
-    const user = await db.users.findFirst({
-      where: { Username: username },
-    });
+    if ((username && password) || (email && password)) {
+      let user: users | null = null;
 
-    if (!user) {
+      if (email.length > 0) {
+        user = await db.users.findUnique({
+          where: { Email: email },
+        });
+      }
+      if (username.length > 0) {
+        user = await db.users.findUnique({
+          where: { Username: username },
+        });
+      }
+
+      // Check if user exists
+      if (!user) {
+        return res.status(404).send({
+          success: false,
+          message: "User not found.",
+        });
+      } else {
+        if (!user.PasswordHash) {
+          console.error("User password hash is not found in database.");
+
+          return res.status(500).send({
+            success: false,
+            message: "Internal server error during user authentication.",
+          });
+        } else {
+          // Validate password
+          const passwordIsValid = compareSync(password, user.PasswordHash);
+
+          if (!passwordIsValid) {
+            return res.status(401).send({
+              success: false,
+              message: "Wrong password.",
+            });
+          }
+
+          // Issue jwt token
+          const token = sign(
+            {
+              username: user.Username,
+              role: user.Role,
+              email: user.Email,
+              purpose: "Authentication",
+            },
+            authConfig.secret,
+            {
+              expiresIn: authConfig.jwtExpiryTime
+                ? authConfig.jwtExpiryTime
+                : "1d",
+            }
+          );
+
+          const { PasswordHash: _, ...userWithoutPassword } = user;
+
+          console.info(
+            `${userWithoutPassword.Role} ${userWithoutPassword.Username} logged in.`
+          );
+
+          return res.status(200).send({
+            success: true,
+            message: `${userWithoutPassword.Role} ${userWithoutPassword.Username} logged in.`,
+            accessToken: token,
+            user: userWithoutPassword,
+          });
+        }
+      }
+    } else {
       return res.status(404).send({
         success: false,
-        message: "User not found.",
+        message: "Username or password is missing.",
       });
     }
-
-    // Validate password
-    if (!user.PasswordHash) {
-      console.error("User password hash is not found in database.");
-
-      return res.status(500).send({
-        success: false,
-        message: "Internal server error during user authentication.",
-      });
-    }
-
-    const passwordIsValid = compareSync(password, user.PasswordHash);
-
-    if (!passwordIsValid) {
-      return res.status(401).send({
-        success: false,
-        message: "Wrong password.",
-      });
-    }
-
-    // Issue jwt token
-    const token = sign(
-      {
-        username: user.Username,
-        role: user.Role,
-        email: user.Email,
-        purpose: "Authentication",
-      },
-      authConfig.secret,
-      {
-        expiresIn: authConfig.jwtExpiryTime ? authConfig.jwtExpiryTime : "1d",
-      }
-    );
-
-    const { PasswordHash: _, ...userWithoutPassword } = user;
-
-    console.info(
-      `${userWithoutPassword.Role} ${userWithoutPassword.Username} logged in.`
-    );
-
-    return res.status(200).send({
-      success: true,
-      message: `${userWithoutPassword.Role} ${userWithoutPassword.Username} logged in.`,
-      accessToken: token,
-      user: userWithoutPassword,
-    });
   } catch (err: any) {
     console.error("Error during user authentication: ", err.message);
     return res.status(500).send({
