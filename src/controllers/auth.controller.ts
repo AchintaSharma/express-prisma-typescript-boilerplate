@@ -48,7 +48,7 @@ export const signUp = async (
   if (existingUsername) {
     return res.status(409).send({
       success: false,
-      message: "Username must be unique.",
+      message: "Username is already taken. Please choose a different one.",
     });
   }
 
