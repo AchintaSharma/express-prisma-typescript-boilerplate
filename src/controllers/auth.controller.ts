@@ -2,6 +2,7 @@
 import { compareSync, hashSync } from "bcrypt";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { Request, Response } from "express";
+import logger from "../helpers/logger";
 
 // Import database
 import { db } from "../configs/db.config";
@@ -20,7 +21,7 @@ export const signUp = async (
 
   // Check if salt is set
   if (!authConfig.salt) {
-    console.error("Authentication error: Salt is not set in auth config.");
+    logger.error("Authentication error: Salt is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
@@ -31,7 +32,7 @@ export const signUp = async (
 
   // Check if secret is set
   if (!authConfig.secret) {
-    console.error("Authentication error: Secret is not set in auth config.");
+    logger.error("Authentication error: Secret is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
@@ -86,7 +87,7 @@ export const signUp = async (
 
     const { PasswordHash: _, ...userWithoutPassword } = userCreated;
 
-    console.info(
+    logger.info(
       `${userWithoutPassword.Role} ${userWithoutPassword.Username} created.`
     );
 
@@ -111,7 +112,7 @@ export const signUp = async (
       user: userWithoutPassword,
     });
   } catch (err: any) {
-    console.error("Error while creating user: ", err.message);
+    logger.error("Error while creating user: ", err.message);
 
     return res.status(500).send({
       status: 500,
@@ -127,7 +128,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
   // Check if secret is set
   if (!authConfig.secret) {
-    console.error("Authentication error: Secret is not set in auth config.");
+    logger.error("Authentication error: Secret is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
@@ -160,7 +161,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         });
       } else {
         if (!user.PasswordHash) {
-          console.error("User password hash is not found in database.");
+          logger.error("User password hash is not found in database.");
 
           return res.status(500).send({
             success: false,
@@ -195,7 +196,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
           const { PasswordHash: _, ...userWithoutPassword } = user;
 
-          console.info(
+          logger.info(
             `${userWithoutPassword.Role} ${userWithoutPassword.Username} logged in.`
           );
 
@@ -214,7 +215,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       });
     }
   } catch (err: any) {
-    console.error("Error during user authentication: ", err.message);
+    logger.error("Error during user authentication: ", err.message);
     return res.status(500).send({
       status: 500,
       success: false,
@@ -231,7 +232,7 @@ export const logout = async (
   const token = req.headers["x-access-token"] as string;
 
   if (!token) {
-    console.error("Token is required for logout.");
+    logger.error("Token is required for logout.");
 
     return res.status(400).send({
       success: false,
@@ -242,7 +243,7 @@ export const logout = async (
   try {
     // Check if secret is set
     if (!authConfig.secret) {
-      console.error("Authentication error: Secret is not set in auth config.");
+      logger.error("Authentication error: Secret is not set in auth config.");
       return res.status(500).send({
         status: 500,
         success: false,
@@ -260,7 +261,7 @@ export const logout = async (
 
     // If the token is blacklisted, return an error
     if (tokenIsBlacklisted) {
-      console.error("Token is blacklisted.");
+      logger.error("Token is blacklisted.");
 
       return res.status(401).send({
         success: false,
@@ -279,14 +280,14 @@ export const logout = async (
       data: { Status: userStatus.inactive },
     });
 
-    console.info(`${decodedToken.role} ${decodedToken.username} logged out.`);
+    logger.info(`${decodedToken.role} ${decodedToken.username} logged out.`);
 
     return res.status(200).send({
       success: true,
       message: `${decodedToken.role} ${decodedToken.username} logged out.`,
     });
   } catch (err: any) {
-    console.error("Error during user logout: ", err.message);
+    logger.error("Error during user logout: ", err.message);
     return res.status(500).send({
       status: 500,
       success: false,

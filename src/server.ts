@@ -1,9 +1,10 @@
 /** App Server */
 // Import npm modules
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import logger from "./helpers/logger";
 
 // Import routes
 import authRoutes from "./routes/auth.route";
@@ -41,7 +42,15 @@ app.get("/", (req, res) => {
 // Plug authentication routes
 authRoutes(app);
 
+// Error handling middleware
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  logger.error(err.message);
+  res.status(500).send({
+    success: false,
+    message: "Internal server error",
+  });
+});
 // Start the server
 app.listen(PORT, () => {
-  console.log(`PSCPL Payroll Server started at PORT: ${PORT}`);
+  logger.info(`PSCPL Payroll Server started at PORT: ${PORT}`);
 });
