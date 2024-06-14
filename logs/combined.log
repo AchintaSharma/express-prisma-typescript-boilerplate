@@ -11,3 +11,8 @@
 {"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:04:53"}
 {"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:05:06"}
 {"level":"error","message":"Token is blacklisted.","service":"user-service","timestamp":"2024-06-14 21:05:11"}
+{"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:27:44"}
+{"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:27:50"}
+{"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:29:24"}
+{"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:31:48"}
+{"level":"info","message":"PSCPL Payroll Server started at PORT: 8086","service":"user-service","timestamp":"2024-06-14 21:31:50"}
