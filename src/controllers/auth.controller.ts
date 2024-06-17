@@ -1,16 +1,16 @@
 // Import npm modules
-import { compareSync, hashSync } from 'bcrypt';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
-import { Request, Response } from 'express';
-import logger from '../helpers/logger';
+import { compareSync, hashSync } from "bcrypt";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
+import { Request, Response } from "express";
+import logger from "../helpers/logger";
 
 // Import database
-import { db } from '../configs/db.config';
+import { db } from "../configs/db.config";
 
 // Import configs
-import { authConfig } from '../configs/auth.config';
-import { userStatus } from '../utils/constants';
-import { users } from '@prisma/client';
+import { authConfig } from "../configs/auth.config";
+import { userStatus } from "../utils/constants";
+import { users } from "@prisma/client";
 
 // Function for admin signup
 export const signUp = async (
@@ -21,23 +21,23 @@ export const signUp = async (
 
   // Check if salt is set
   if (!authConfig.salt) {
-    logger.error('Authentication error: Salt is not set in auth config.');
+    logger.error("Authentication error: Salt is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error during user registration.',
+      message: "Internal server error during user registration.",
     });
   }
 
   // Check if secret is set
   if (!authConfig.secret) {
-    logger.error('Authentication error: Secret is not set in auth config.');
+    logger.error("Authentication error: Secret is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error during user registration.',
+      message: "Internal server error during user registration.",
     });
   }
 
@@ -49,7 +49,7 @@ export const signUp = async (
   if (existingUsername) {
     return res.status(409).send({
       success: false,
-      message: 'Username is already taken. Please choose a different one.',
+      message: "Username is already taken. Please choose a different one.",
     });
   }
 
@@ -61,7 +61,7 @@ export const signUp = async (
   if (existingEmail) {
     return res.status(409).send({
       success: false,
-      message: 'Email must be unique.',
+      message: "Email must be unique.",
     });
   }
 
@@ -97,11 +97,11 @@ export const signUp = async (
         username: userCreated.Username,
         role: userCreated.Role,
         email: userCreated.Email,
-        purpose: 'Authentication',
+        purpose: "Authentication",
       },
       authConfig.secret,
       {
-        expiresIn: authConfig.jwtExpiryTime ? authConfig.jwtExpiryTime : '1d',
+        expiresIn: authConfig.jwtExpiryTime ? authConfig.jwtExpiryTime : "1d",
       },
     );
 
@@ -112,28 +112,28 @@ export const signUp = async (
       user: userWithoutPassword,
     });
   } catch (err: any) {
-    logger.error('Error while creating user: ', err.message);
+    logger.error("Error while creating user: ", err.message);
 
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error while registering user.',
+      message: "Internal server error while registering user.",
     });
   }
 };
 
 // Function for user login
 export const login = async (req: Request, res: Response): Promise<Response> => {
-  const { username = '', password, email = '' } = req.body;
+  const { username = "", password, email = "" } = req.body;
 
   // Check if secret is set
   if (!authConfig.secret) {
-    logger.error('Authentication error: Secret is not set in auth config.');
+    logger.error("Authentication error: Secret is not set in auth config.");
 
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error during user authentication.',
+      message: "Internal server error during user authentication.",
     });
   }
 
@@ -157,15 +157,15 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       if (!user) {
         return res.status(404).send({
           success: false,
-          message: 'User not found.',
+          message: "User not found.",
         });
       } else {
         if (!user.PasswordHash) {
-          logger.error('User password hash is not found in database.');
+          logger.error("User password hash is not found in database.");
 
           return res.status(500).send({
             success: false,
-            message: 'Internal server error during user authentication.',
+            message: "Internal server error during user authentication.",
           });
         } else {
           // Validate password
@@ -174,7 +174,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
           if (!passwordIsValid) {
             return res.status(401).send({
               success: false,
-              message: 'Wrong password.',
+              message: "Wrong password.",
             });
           }
 
@@ -184,13 +184,13 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
               username: user.Username,
               role: user.Role,
               email: user.Email,
-              purpose: 'Authentication',
+              purpose: "Authentication",
             },
             authConfig.secret,
             {
               expiresIn: authConfig.jwtExpiryTime
                 ? authConfig.jwtExpiryTime
-                : '1d',
+                : "1d",
             },
           );
 
@@ -211,15 +211,15 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     } else {
       return res.status(404).send({
         success: false,
-        message: 'Username or password is missing.',
+        message: "Username or password is missing.",
       });
     }
   } catch (err: any) {
-    logger.error('Error during user authentication: ', err.message);
+    logger.error("Error during user authentication: ", err.message);
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error during user authentication.',
+      message: "Internal server error during user authentication.",
     });
   }
 };
@@ -229,25 +229,25 @@ export const logout = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
-  const token = req.headers['x-access-token'] as string;
+  const token = req.headers["x-access-token"] as string;
 
   if (!token) {
-    logger.error('Token is required for logout.');
+    logger.error("Token is required for logout.");
 
     return res.status(400).send({
       success: false,
-      message: 'Token is required for logout.',
+      message: "Token is required for logout.",
     });
   }
 
   try {
     // Check if secret is set
     if (!authConfig.secret) {
-      logger.error('Authentication error: Secret is not set in auth config.');
+      logger.error("Authentication error: Secret is not set in auth config.");
       return res.status(500).send({
         status: 500,
         success: false,
-        message: 'Internal server error during user logout.',
+        message: "Internal server error during user logout.",
       });
     }
 
@@ -261,11 +261,11 @@ export const logout = async (
 
     // If the token is blacklisted, return an error
     if (tokenIsBlacklisted) {
-      logger.error('Token is blacklisted.');
+      logger.error("Token is blacklisted.");
 
       return res.status(401).send({
         success: false,
-        message: 'Token is blacklisted. Please login again.',
+        message: "Token is blacklisted. Please login again.",
       });
     }
 
@@ -287,11 +287,11 @@ export const logout = async (
       message: `${decodedToken.role} ${decodedToken.username} logged out.`,
     });
   } catch (err: any) {
-    logger.error('Error during user logout: ', err.message);
+    logger.error("Error during user logout: ", err.message);
     return res.status(500).send({
       status: 500,
       success: false,
-      message: 'Internal server error during user logout.',
+      message: "Internal server error during user logout.",
     });
   }
 };

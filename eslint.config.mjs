@@ -1,10 +1,11 @@
-import prettierPlugin from 'eslint-plugin-prettier';
-import typescriptParser from '@typescript-eslint/parser';
-import globals from 'globals';
+import prettierPlugin from "eslint-plugin-prettier";
+import typescriptParser from "@typescript-eslint/parser";
+import globals from "globals";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx'], // Include TypeScript files
+    files: ["**/*.ts", "**/*.tsx"], // Include TypeScript files
     languageOptions: {
       parser: typescriptParser,
       globals: {
@@ -16,13 +17,12 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
-      semi: ['error', 'always'],
-      'no-unused-vars': ['warn'],
-      'no-console': ['warn'],
-      indent: ['error', 2],
-      quotes: ['error', 'single'],
+      // ESLint rules
+      // unused vars
+      "no-unused-vars": "warn",
       // Prettier rules
       ...prettierPlugin.configs.recommended.rules,
     },
   },
+  eslintPluginPrettierRecommended,
 ];

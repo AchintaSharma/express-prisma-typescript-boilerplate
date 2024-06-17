@@ -1,5 +1,5 @@
 // Import npm modules
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // Types for config
 interface AuthConfig {
