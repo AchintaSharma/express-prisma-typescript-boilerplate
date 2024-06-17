@@ -1,4 +1,4 @@
-import pluginObject from 'eslint-plugin-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 import typescriptParser from '@typescript-eslint/parser';
 import globals from 'globals';
 
@@ -12,18 +12,17 @@ export default [
         ...globals.node,
       },
     },
-    // plugins: ['prettier'],
-
     plugins: {
-      prettier: pluginObject,
+      prettier: prettierPlugin,
     },
-
     rules: {
       semi: ['error', 'always'],
       'no-unused-vars': ['warn'],
       'no-console': ['warn'],
       indent: ['error', 2],
       quotes: ['error', 'single'],
+      // Prettier rules
+      ...prettierPlugin.configs.recommended.rules,
     },
   },
 ];
