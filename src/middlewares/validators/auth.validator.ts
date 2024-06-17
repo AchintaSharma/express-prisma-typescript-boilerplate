@@ -1,66 +1,66 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 import {
   body,
   validationResult,
   check,
   ValidationError,
-} from "express-validator";
+} from 'express-validator';
 
 const validateSignupRequestBody = [
   // Ensure that the request contains a name
-  check("name")
+  check('name')
     .exists()
-    .withMessage("Name is required")
+    .withMessage('Name is required')
     .isString()
-    .withMessage("Name must be a string")
+    .withMessage('Name must be a string')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Name cannot be empty"),
+    .withMessage('Name cannot be empty'),
 
   // Validate and sanitize username
-  check("username")
+  check('username')
     .exists()
-    .withMessage("Username is required")
+    .withMessage('Username is required')
     .isString()
-    .withMessage("Username must be a string")
+    .withMessage('Username must be a string')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Username cannot be empty"),
+    .withMessage('Username cannot be empty'),
 
   // Validate and sanitize email
-  check("email")
+  check('email')
     .exists()
-    .withMessage("Email is required")
+    .withMessage('Email is required')
     .isEmail()
-    .withMessage("Invalid email format")
+    .withMessage('Invalid email format')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Email cannot be empty"),
+    .withMessage('Email cannot be empty'),
 
   // Password validation
-  check("password")
+  check('password')
     .exists()
-    .withMessage("Password is required")
+    .withMessage('Password is required')
     .isString()
-    .withMessage("Password must be a string")
+    .withMessage('Password must be a string')
     .notEmpty()
-    .withMessage("Password cannot be empty")
+    .withMessage('Password cannot be empty')
     .trim()
     .escape(), // Sanitize to prevent XSS
 
   // Validate and sanitize role
-  check("role")
+  check('role')
     .exists()
-    .withMessage("Role is required")
+    .withMessage('Role is required')
     .isString()
-    .withMessage("Role must be a string")
+    .withMessage('Role must be a string')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Role cannot be empty"),
+    .withMessage('Role cannot be empty'),
 
   // Custom error handling
   (req: Request, res: Response, next: NextFunction) => {
@@ -90,41 +90,41 @@ const validateLoginRequestBody = [
     if (username === undefined && email === undefined) {
       return res.status(401).json({
         success: false,
-        message: "Either username or email is required.",
-        field: "username or email",
+        message: 'Either username or email is required.',
+        field: 'username or email',
       });
     }
     next();
   },
 
   // Validate and sanitize username if it exists
-  check("username")
+  check('username')
     .optional()
     .isString()
-    .withMessage("Username must be a string")
+    .withMessage('Username must be a string')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Username cannot be empty"),
+    .withMessage('Username cannot be empty'),
 
   // Validate and sanitize email if it exists
-  check("email")
+  check('email')
     .optional()
     .isEmail()
-    .withMessage("Invalid email format")
+    .withMessage('Invalid email format')
     .trim()
     .escape() // Sanitize to prevent XSS
     .notEmpty()
-    .withMessage("Email cannot be empty"),
+    .withMessage('Email cannot be empty'),
 
   // Password validation
-  body("password")
+  body('password')
     .exists()
-    .withMessage("Password is required")
+    .withMessage('Password is required')
     .isString()
-    .withMessage("Password must be a string")
+    .withMessage('Password must be a string')
     .notEmpty()
-    .withMessage("Password cannot be empty")
+    .withMessage('Password cannot be empty')
     .trim()
     .escape(), // Sanitize to prevent XSS
 

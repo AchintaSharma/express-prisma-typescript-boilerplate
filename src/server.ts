@@ -1,22 +1,22 @@
 /** App Server */
 // Import npm modules
-import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
-import logger from "./helpers/logger";
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import logger from './helpers/logger';
 
 // Import routes
-import authRoutes from "./routes/auth.route";
+import authRoutes from './routes/auth.route';
 
 // Import configs
-import { PORT } from "./configs/server.config";
+import { PORT } from './configs/server.config';
 
 // Rate Limiter Middleware: Limit repeated requests to public APIs and/or endpoints
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP, please try again later.",
+  message: 'Too many requests from this IP, please try again later.',
 });
 
 // Create express app
@@ -26,16 +26,16 @@ const app = express();
 app.use(helmet());
 
 // Body Parser Middleware
-app.use(bodyParser.json({ limit: "100mb" }));
-app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
 // Rate Limiter
 app.use(limiter);
 
 // Health Check
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).json({
-    message: "Welcome to 'PSCPL-Payroll-Server'.",
+    message: 'Welcome to \'PSCPL-Payroll-Server\'.',
   });
 });
 
@@ -47,7 +47,7 @@ app.use((err: any, req: Request, res: Response) => {
   logger.error(err.message);
   res.status(500).send({
     success: false,
-    message: "Internal server error",
+    message: 'Internal server error',
   });
 });
 // Start the server
