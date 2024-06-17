@@ -39,13 +39,20 @@ export default [
       },
     },
     plugins: ['prettier'],
+    // rules: {
+    //   'prettier/prettier': 'error',
+    //   semi: ['error', 'always'],
+    //   'no-unused-vars': [
+    //     'warn',
+    //     { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    //   ],
+    //   'no-console': ['warn'],
+    //   indent: ['error', 2],
+    //   quotes: ['error', 'single'],
+    // },
     rules: {
-      'prettier/prettier': 'error',
       semi: ['error', 'always'],
-      'no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
+      'no-unused-vars': ['warn'],
       'no-console': ['warn'],
       indent: ['error', 2],
       quotes: ['error', 'single'],
