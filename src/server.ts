@@ -35,7 +35,7 @@ app.use(limiter);
 // Health Check
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Welcome to \'PSCPL-Payroll-Server\'.',
+    message: 'Welcome to PSCPL-Payroll-Server.',
   });
 });
 
