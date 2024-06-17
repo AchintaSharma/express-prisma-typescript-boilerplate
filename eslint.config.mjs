@@ -18,8 +18,7 @@ export default [
     },
     rules: {
       // ESLint rules
-      // unused vars
-      "no-unused-vars": "warn",
+      // "no-unused-vars": "error",
       // Prettier rules
       ...prettierPlugin.configs.recommended.rules,
     },
