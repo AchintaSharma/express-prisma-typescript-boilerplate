@@ -1,6 +1,6 @@
 /** App Server */
 // Import npm modules
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -43,7 +43,7 @@ app.get("/", (req, res) => {
 authRoutes(app);
 
 // Error handling middleware
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response) => {
   logger.error(err.message);
   res.status(500).send({
     success: false,
